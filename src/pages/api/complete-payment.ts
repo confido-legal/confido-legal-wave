@@ -1,7 +1,7 @@
 import gravitylegal, {
   Payment,
   RunPaymentInput,
-} from '@/gravity-legal-requests';
+} from '@/confido-legal-requests';
 import { getSessionFromRequestOrThrow } from '@/lib/session';
 import type { NextApiRequest, NextApiResponse } from 'next';
 

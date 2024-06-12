@@ -3,7 +3,7 @@ import { GravityLegalConnectionStatus } from '@/components/home/GravityLegalConn
 import PaymentVehicleSplash from '@/components/home/PaymentVehiclesSplash';
 import { Layout } from '@/components/layout/Layout';
 import { useSession } from '@/components/layout/SessionProvider';
-import { getMyPartner } from '@/gravity-legal-requests/getMyPartner';
+import { getMyPartner } from '@/confido-legal-requests/getMyPartner';
 import { requireAuth } from '@/lib/session';
 import { Container } from '@chakra-ui/react';
 import { InferGetServerSidePropsType } from 'next';

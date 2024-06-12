@@ -1,4 +1,4 @@
-import { gqlEndpoint } from '@/gravity-legal-requests';
+import { gqlEndpoint } from '@/confido-legal-requests';
 import { GraphQLClient, gql } from 'graphql-request';
 
 const GET_FIRM = gql`
@@ -11,17 +11,17 @@ const GET_FIRM = gql`
   }
 `;
 
-export interface GravityLegalFirm {
+export interface ConfidoLegalFirm {
   id: string;
   isAcceptingPayments: boolean;
   name: string;
 }
 
 export interface GetFirmData {
-  firm: GravityLegalFirm;
+  firm: ConfidoLegalFirm;
 }
 
-export async function getFirm(firmApiToken: string): Promise<GravityLegalFirm> {
+export async function getFirm(firmApiToken: string): Promise<ConfidoLegalFirm> {
   const client = new GraphQLClient(gqlEndpoint, {
     headers: {
       'x-api-key': firmApiToken,

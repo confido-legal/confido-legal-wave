@@ -1,4 +1,4 @@
-import { GravityLegalFirm, getFirm } from '@/gravity-legal-requests/getFirm';
+import { ConfidoLegalFirm, getFirm } from '@/confido-legal-requests/getFirm';
 import prisma from '@/lib/prisma';
 import { Firm, User } from '@prisma/client';
 import Cookies from 'cookies';
@@ -8,7 +8,7 @@ export interface Session {
   error?: any;
   user?: User;
   firm?: Firm;
-  glFirm?: GravityLegalFirm;
+  glFirm?: ConfidoLegalFirm;
 }
 
 export default async function handler(
@@ -35,7 +35,7 @@ export default async function handler(
       },
     });
 
-    let glFirm: GravityLegalFirm | undefined;
+    let glFirm: ConfidoLegalFirm | undefined;
 
     if (firm?.glApiToken) {
       try {

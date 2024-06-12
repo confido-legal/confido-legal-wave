@@ -2,13 +2,13 @@
 
 # Legal Wave
 
-Legal Wave is an example application to showcase what can be done with the Gravity Legal payments platform. It is written in Typescript using [Next.js](https://nextjs.org/), a React framework. We also use [Chakra UI](https://chakra-ui.com/) to speed up building the UI.
+Legal Wave is an example application to showcase what can be done with the Confido Legal payments platform. It is written in Typescript using [Next.js](https://nextjs.org/), a React framework. We also use [Chakra UI](https://chakra-ui.com/) to speed up building the UI.
 
 ## Getting Started
 
-You will need a Partner account in our sandbox environment to run Legal Wave locally. If you need an account, shoot us an email at support@gravity-legal.com
+You will need a Partner account in our sandbox environment to run Legal Wave locally. If you need an account, shoot us an email at support@confidolegal.com
 
-1. Login at [app.sandbox.gravity-legal.com](https://app.sandbox.gravity-legal.com)
+1. Login at [app.sandbox.confidolegal.com](https://app.sandbox.confidolegal.com)
 2. Go to Settings and create an api token
 3. Rename `.env.template` to `.env.local`
 4. Paste your token into `.env.local`

@@ -1,4 +1,4 @@
-import { disconnect as disconnectGravityLegal } from '@/gravity-legal-requests/disconnect';
+import { disconnect as disconnectConfidoLegal } from '@/confido-legal-requests/disconnect';
 import prisma from '@/lib/prisma';
 import { getSessionFromRequestOrThrow } from '@/lib/session';
 import type { NextApiRequest, NextApiResponse } from 'next';
@@ -16,7 +16,7 @@ export default async function handler(
     return res.send(200);
   }
 
-  await disconnectGravityLegal(firmToken);
+  await disconnectConfidoLegal(firmToken);
 
   // Nullify the Firm Api Token in our database
   await prisma.firm.update({

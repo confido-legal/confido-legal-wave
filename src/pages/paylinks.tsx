@@ -2,7 +2,7 @@ import { Layout } from '@/components/layout/Layout';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 
 import PaylinkPaymentForm from '@/components/paylinks/PaylinkPaymentForm';
-import { createPaymentToken } from '@/gravity-legal-requests/createPaymentToken';
+import { createPaymentToken } from '@/confido-legal-requests/createPaymentToken';
 import { requireAuth } from '@/lib/session';
 import {
   Container,
@@ -17,7 +17,7 @@ import {
 import { MdCheckCircle } from 'react-icons/md';
 
 export const getServerSideProps = requireAuth(async ({ session }) => {
-  // grab the Gravity Legal Firm Token
+  // grab the Confido Legal Firm Token
   // from the current authenticated user
   const firmToken = session.user!.firm.glApiToken as string;
 

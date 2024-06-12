@@ -1,4 +1,4 @@
-import { gqlEndpoint } from '@/gravity-legal-requests';
+import { gqlEndpoint } from '@/confido-legal-requests';
 import { GraphQLClient, gql } from 'graphql-request';
 
 const CREATE_ONBOARDING_TOKEN = gql`

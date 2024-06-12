@@ -1,4 +1,4 @@
-import { PaymentMethod, gqlEndpoint } from '@/gravity-legal-requests';
+import { PaymentMethod, gqlEndpoint } from '@/confido-legal-requests';
 import { GraphQLClient, gql } from 'graphql-request';
 
 const COMPLETE_SAVE_PAYMENT_METHOD = gql`

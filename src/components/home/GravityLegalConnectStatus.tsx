@@ -58,7 +58,7 @@ export const GravityLegalConnectionStatus: FC = (props) => {
               >
                 <Stack spacing='1'>
                   <Text textStyle='lg' fontWeight='medium'>
-                    Connected to Gravity Legal ✅
+                    Connected to Confido Legal ✅
                   </Text>
                   <Text textStyle='xs' color='fg.muted'>
                     <strong>{glFirm?.name}</strong> {truncatedFirmId()}

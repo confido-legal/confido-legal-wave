@@ -1,4 +1,4 @@
-import { gqlEndpoint } from '@/gravity-legal-requests';
+import { gqlEndpoint } from '@/confido-legal-requests';
 import { GraphQLClient, gql } from 'graphql-request';
 
 const DISCONNECT_FROM_PARTNER = gql`

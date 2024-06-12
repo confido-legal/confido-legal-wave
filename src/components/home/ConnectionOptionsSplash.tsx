@@ -48,7 +48,7 @@ export const ConnectionOptionsSplash: FC<Props> = ({ connectUrl }) => {
               </Heading>
             </Stack>
             <Text textStyle={{ base: 'lg', md: 'xl' }} color='fg.muted'>
-              Get started by connecting your Legal Wave account to a Gravity
+              Get started by connecting your Legal Wave account to a Confido
               Legal account.
             </Text>
           </Stack>
@@ -58,7 +58,7 @@ export const ConnectionOptionsSplash: FC<Props> = ({ connectUrl }) => {
                 <Text as='h2' fontWeight='semibold' textStyle='xl'>
                   Connect
                 </Text>
-                <Badge variant='pill'>Existing Gravity Legal accounts</Badge>
+                <Badge variant='pill'>Existing Confido Legal accounts</Badge>
               </AccordionButton>
               <AccordionPanel px='0'>
                 <Stack spacing={{ base: '6', md: '8' }}>
@@ -67,7 +67,7 @@ export const ConnectionOptionsSplash: FC<Props> = ({ connectUrl }) => {
                       With Connect, users <i>connect</i> their existing Gravity
                       Legal account to their Legal Wave account. Connecting
                       gives Legal Wave permission to manage the firm&apos;s
-                      Gravity Legal account on their behalf.
+                      Confido Legal account on their behalf.
                     </Text>
                   </Stack>
                   <Stack spacing={{ base: '4' }}>
@@ -92,24 +92,24 @@ export const ConnectionOptionsSplash: FC<Props> = ({ connectUrl }) => {
                 <Text as='h2' fontWeight='semibold' textStyle='xl'>
                   Sign Up Link
                 </Text>
-                <Badge variant='pill'>New Gravity Legal accounts</Badge>
+                <Badge variant='pill'>New Confido Legal accounts</Badge>
               </AccordionButton>
               <AccordionPanel px='0'>
                 <Stack spacing={{ base: '6', md: '8' }}>
                   <Stack spacing={{ base: '4', md: '5' }}>
                     <Text color='fg.muted'>
                       Sign Up Link is for firms who don&apos;t already have a
-                      Gravity Legal account. Partner&apos;s will create a new
+                      Confido Legal account. Partner&apos;s will create a new
                       Firm through the API then direct their users to a unique
                       sign up link for that Firm.
                     </Text>
                   </Stack>
                   <Stack spacing={{ base: '4' }}>
                     <Text color='fg.muted'>
-                      To get started with a new Gravity Legal account, click the
+                      To get started with a new Confido Legal account, click the
                       button below.
                     </Text>
-                    <SignUpForGravityLegalButton />
+                    <SignUpForConfidoLegalButton />
                   </Stack>
                 </Stack>
               </AccordionPanel>
@@ -126,8 +126,8 @@ export const ConnectionOptionsSplash: FC<Props> = ({ connectUrl }) => {
                   <Stack spacing={{ base: '4', md: '5' }}>
                     <Text color='fg.muted'>
                       Like Sign Up Links, Onboarding.js is for firms who
-                      don&apos;t already have a Gravity Legal account. But,
-                      instead of directing firms to the Gravity Legal app, we
+                      don&apos;t already have a Confido Legal account. But,
+                      instead of directing firms to the Confido Legal app, we
                       can embed the onboarding form directly in our app.
                     </Text>
                   </Stack>
@@ -159,14 +159,10 @@ export const ConnectionOptionsSplash: FC<Props> = ({ connectUrl }) => {
   );
 };
 
-export interface SignUpForGravityLegalButtonProps {}
-
-const SignUpForGravityLegalButton: FC<SignUpForGravityLegalButtonProps> = (
-  props
-) => {
+const SignUpForConfidoLegalButton: FC = (props) => {
   const [loading, setLoading] = useState(false);
 
-  const handleSignUpForGravityLegal = async () => {
+  const handleSignUpForConfidoLegal = async () => {
     setLoading(true);
 
     const result = await fetch('/api/get-sign-up-link', {
@@ -187,9 +183,9 @@ const SignUpForGravityLegalButton: FC<SignUpForGravityLegalButtonProps> = (
       colorScheme='blue'
       isLoading={loading}
       variant='solid'
-      onClick={handleSignUpForGravityLegal}
+      onClick={handleSignUpForConfidoLegal}
     >
-      Sign Up For Gravity Legal
+      Sign Up For Confido Legal
     </Button>
   );
 };

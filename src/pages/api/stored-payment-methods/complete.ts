@@ -1,4 +1,4 @@
-import gravitylegal, { PaymentMethod } from '@/gravity-legal-requests';
+import confido, { PaymentMethod } from '@/confido-legal-requests';
 import { getSessionFromRequestOrThrow } from '@/lib/session';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -12,7 +12,7 @@ export default async function handler(
 
     const body = req.body;
 
-    const result = await gravitylegal.completeSavePaymentMethod(firmToken, {
+    const result = await confido.completeSavePaymentMethod(firmToken, {
       payerEmail: body.email,
       payerName: body.clientName,
       paymentMethod: body.paymentMethod as PaymentMethod,

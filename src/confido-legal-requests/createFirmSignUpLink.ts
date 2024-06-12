@@ -1,4 +1,4 @@
-import { gqlEndpoint } from '@/gravity-legal-requests';
+import { gqlEndpoint } from '@/confido-legal-requests';
 import { GraphQLClient, gql } from 'graphql-request';
 
 const CREATE_FIRM_SIGN_UP_LINK = gql`

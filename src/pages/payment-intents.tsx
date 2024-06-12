@@ -1,5 +1,5 @@
 import { Layout } from '@/components/layout/Layout';
-import { createPaymentToken } from '@/gravity-legal-requests/createPaymentToken';
+import { createPaymentToken } from '@/confido-legal-requests/createPaymentToken';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 
 import { PaymentForm } from '@/components/payment-intents/PaymentForm';

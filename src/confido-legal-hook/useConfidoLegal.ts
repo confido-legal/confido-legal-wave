@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ChangeEvent, HostedFieldsState } from './GravityLegal';
+import { ChangeEvent, HostedFieldsState } from './ConfidoLegal';
 
 export interface Params {
   paymentToken?: string;
@@ -7,7 +7,7 @@ export interface Params {
   formType: 'card' | 'ach';
 }
 
-export const useGravityLegal = (
+export const useConfidoLegal = (
   params: Params
 ): { state: HostedFieldsState | undefined } => {
   const [hostedFieldsState, setHostedFieldsState] =

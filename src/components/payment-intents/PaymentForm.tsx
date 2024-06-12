@@ -1,6 +1,6 @@
 import HostedFieldInput from '@/components/HostedFieldInput';
 import { CreditCardBrandIcon } from '@/components/credit-cards/CreditCardBrandIcon';
-import { useGravityLegal } from '@/gravity-legal-hook/useGravityLegal';
+import { useConfidoLegal } from '@/confido-legal-hook/useConfidoLegal';
 import {
   Alert,
   AlertIcon,
@@ -60,7 +60,7 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
   const [result, setResult] = useState<PaymentResult>();
   const [error, setError] = useState<any>(null);
 
-  const { state: hostedFieldsState } = useGravityLegal({
+  const { state: hostedFieldsState } = useConfidoLegal({
     paymentToken,
     formType,
   });

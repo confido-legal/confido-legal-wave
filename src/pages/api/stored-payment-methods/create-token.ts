@@ -1,4 +1,4 @@
-import gravitylegal from '@/gravity-legal-requests';
+import confido from '@/confido-legal-requests';
 import { getSessionFromRequestOrThrow } from '@/lib/session';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -10,7 +10,7 @@ export default async function handler(
     const session = await getSessionFromRequestOrThrow(req);
     const firmToken = session.user.firm.glApiToken as string;
 
-    const token = await gravitylegal.createSavePaymentMethodToken({
+    const token = await confido.createSavePaymentMethodToken({
       firmToken,
     });
 

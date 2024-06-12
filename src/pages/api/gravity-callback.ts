@@ -1,4 +1,4 @@
-import { exchangeCodeForFirmToken } from '@/gravity-legal-requests/exchangeCodeForFirmToken';
+import { exchangeCodeForFirmToken } from '@/confido-legal-requests/exchangeCodeForFirmToken';
 import prisma from '@/lib/prisma';
 import { getSessionFromRequestOrThrow } from '@/lib/session';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -11,10 +11,10 @@ export default async function handler(
   const { query } = req;
   const { code, state } = query;
   // The state that was passed to
-  // gravity-legal.com/connect/legal-wave?state=STATE
+  // confidolegal.com/connect/legal-wave?state=STATE
   console.log('query.state=', state);
 
-  // make a call to Gravity Legal to
+  // make a call to Confido Legal to
   // exchange the code for a token
   const firmToken = await exchangeCodeForFirmToken(code as string);
 

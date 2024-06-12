@@ -1,5 +1,5 @@
-import { useGravityLegal } from '@/gravity-legal-hook/useGravityLegal';
-import { StoredPaymentMethodForRunPayment } from '@/gravity-legal-requests';
+import { useConfidoLegal } from '@/confido-legal-hook/useConfidoLegal';
+import { StoredPaymentMethodForRunPayment } from '@/confido-legal-requests';
 import { handleJsonResponse } from '@/lib/handleJsonResponse';
 import {
   Button,
@@ -86,7 +86,7 @@ const StorePaymentMethodForm: FC<StorePaymentMethodFormProps> = ({
   );
   const [error, setError] = useState<any>(null);
 
-  const { state: hostedFieldsState } = useGravityLegal({
+  const { state: hostedFieldsState } = useConfidoLegal({
     savePaymentMethodToken: token,
     formType,
   });
