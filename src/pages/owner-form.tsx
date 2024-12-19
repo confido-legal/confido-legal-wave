@@ -22,11 +22,11 @@ const OwnerFormPage: NextPage<WithRouterProps> = ({ router }) => {
 
   return (
     <Container
-      maxW="lg"
+      maxW='lg'
       py={{ base: '12', md: '24' }}
       px={{ base: '0', sm: '8' }}
     >
-      <div id="confido-owner-form" />
+      <div id='confido-owner-form' />
     </Container>
   );
 };
