@@ -21,7 +21,7 @@ export * from './runPayment';
 export const gqlEndpoint =
   process.env.GL_API_ENDPOINT ?? 'https://api.sandbox.gravity-legal.com/v2';
 
-export default {
+const apiExports = {
   completeSavePaymentMethod,
   createFirm,
   createFirmSignUpLink,
@@ -32,3 +32,5 @@ export default {
   getMyPartner,
   runPayment,
 };
+
+export default apiExports;

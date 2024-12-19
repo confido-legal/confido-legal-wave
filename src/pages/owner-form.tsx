@@ -12,6 +12,7 @@ const OwnerFormPage: NextPage<WithRouterProps> = ({ router }) => {
     return <div>invalid url</div>;
   }
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     window.confidoOnboarding.renderOwnerForm({
       code,
