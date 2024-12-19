@@ -84,25 +84,22 @@ export const GravityLegalConnectionStatus: FC = (props) => {
                   <Button onClick={() => setShowOnboardingModal(true)}>
                     Complete application
                   </Button>
-
-                  {
-                    <Alert status='info'>
-                      <AlertIcon />
-                      <Text textStyle='sm'>
-                        You can activate the firm using sandbox tools in the{' '}
-                        <Link
-                          color='blue.500'
-                          href='https://app.sandbox.confidolegal.com'
-                          isExternal
-                        >
-                          sandbox
-                        </Link>{' '}
-                        when emulating an admin for your firm. If you want to
-                        fill out the application faster, there is also an
-                        autofill feature in the sandbox.
-                      </Text>
-                    </Alert>
-                  }
+                  <Alert status='info'>
+                    <AlertIcon />
+                    <Text textStyle='sm'>
+                      You can activate the firm using sandbox tools in the{' '}
+                      <Link
+                        color='blue.500'
+                        href='https://app.sandbox.confidolegal.com'
+                        isExternal
+                      >
+                        sandbox
+                      </Link>{' '}
+                      when emulating an admin for your firm. If you want to fill
+                      out the application faster, there is also an autofill
+                      feature in the sandbox.
+                    </Text>
+                  </Alert>
                 </Stack>
               )}
             </Stack>
