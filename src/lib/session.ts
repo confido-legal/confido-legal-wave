@@ -1,14 +1,15 @@
-import prisma from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
-import { IncomingMessage } from 'http';
+import { ConfidoLegalFirm, getFirm } from "@/confido-legal-requests/getFirm";
+import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
+import { IncomingMessage } from "http";
 import {
   GetServerSideProps,
   GetServerSidePropsContext,
   GetServerSidePropsResult,
   PreviewData,
-} from 'next';
-import { NextApiRequestCookies } from 'next/dist/server/api-utils';
-import { ParsedUrlQuery } from 'querystring';
+} from "next";
+import { NextApiRequestCookies } from "next/dist/server/api-utils";
+import { ParsedUrlQuery } from "querystring";
 
 type UserWithFirm = Prisma.UserGetPayload<{
   include: {
@@ -24,12 +25,18 @@ export interface AuthedSession {
   user: UserWithFirm;
 }
 
+export interface FullSession {
+  user: UserWithFirm;
+  firm: Prisma.FirmGetPayload<{}>;
+  glFirm?: ConfidoLegalFirm;
+}
+
 export async function getSessionFromRequest(
   req: IncomingMessage & {
     cookies: NextApiRequestCookies;
   }
 ): Promise<Session> {
-  const userId = req.cookies['wave:userId'];
+  const userId = req.cookies["wave:userId"];
 
   let user = null;
 
@@ -57,10 +64,31 @@ export async function getSessionFromRequestOrThrow(
   const session = await getSessionFromRequest(req);
 
   if (!session.user) {
-    throw new Error('user not found');
+    throw new Error("user not found");
   }
 
   return session as AuthedSession;
+}
+
+export async function getFullSessionFromRequestOrThrow(
+  req: IncomingMessage & {
+    cookies: NextApiRequestCookies;
+  }
+): Promise<FullSession> {
+  const session = await getSessionFromRequestOrThrow(req);
+
+  const firm = session.user.firm;
+  let glFirm: ConfidoLegalFirm | undefined;
+
+  if (firm?.glApiToken) {
+    glFirm = await getFirm(firm.glApiToken);
+  }
+
+  return {
+    user: session.user,
+    firm,
+    glFirm,
+  };
 }
 
 export function withSession(
@@ -100,7 +128,7 @@ export function requireAuth(
     if (!session.user) {
       return {
         redirect: {
-          destination: '/signup',
+          destination: "/signup",
           permanent: false,
         },
       };

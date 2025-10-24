@@ -1,9 +1,9 @@
 import gravitylegal, {
   Payment,
-  RunPaymentInput,
-} from '@/confido-legal-requests';
-import { getSessionFromRequestOrThrow } from '@/lib/session';
-import type { NextApiRequest, NextApiResponse } from 'next';
+  PaymentSessionCompleteInput,
+} from "@/confido-legal-requests";
+import { getSessionFromRequestOrThrow } from "@/lib/session";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,16 +13,19 @@ export default async function handler(
   const session = await getSessionFromRequestOrThrow(req);
   const firmToken = session.user.firm.glApiToken as string;
 
-  const runPaymentInput: RunPaymentInput = {
+  const paymentSessionCompleteInput: PaymentSessionCompleteInput = {
     amount: parseInt(body.amount),
     payerEmail: body.email,
-    paymentMethod: body.paymentMethod,
+    method: body.paymentMethod,
     payerName: body.name,
-    paymentToken: body.paymentToken,
+    paymentSessionToken: body.paymentToken,
     savePaymentMethod: body.savePaymentMethod,
     sendReceipt: body.sendReceipt,
   };
 
-  const result = await gravitylegal.runPayment(firmToken, runPaymentInput);
-  res.status(200).json(result.runPayment);
+  const result = await gravitylegal.paymentSessionComplete(
+    firmToken,
+    paymentSessionCompleteInput
+  );
+  res.status(200).json(result.paymentSessionComplete);
 }
