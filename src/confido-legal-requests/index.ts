@@ -8,6 +8,7 @@ import { exchangeCodeForFirmToken } from "./exchangeCodeForFirmToken";
 import { getFirm } from "./getFirm";
 import { getMyPartner } from "./getMyPartner";
 import { getStoredPaymentMethods } from "./getStoredPaymentMethods";
+import { initiateSPMPayment } from "./initiateSPMPayment";
 import { payRequestList } from "./payRequestList";
 import { paymentSessionComplete } from "./paymentSessionComplete";
 import { reactivateStoredPaymentMethod } from "./reactivateStoredPaymentMethod";
@@ -22,6 +23,7 @@ export * from "./exchangeCodeForFirmToken";
 export * from "./getFirm";
 export * from "./getMyPartner";
 export * from "./getStoredPaymentMethods";
+export * from "./initiateSPMPayment";
 export * from "./payRequestList";
 export * from "./paymentSessionComplete";
 export * from "./reactivateStoredPaymentMethod";
@@ -40,6 +42,7 @@ export default {
   getFirm,
   getMyPartner,
   getStoredPaymentMethods,
+  initiateSPMPayment,
   payRequestList,
   paymentSessionComplete,
   reactivateStoredPaymentMethod,

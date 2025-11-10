@@ -94,44 +94,67 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
     async (data) => {
       setLoading(true);
 
-      console.log("LEGAL WAVE ABOUT TO SUBMIT");
-      const { error } = await window.gravityLegal.submitFields();
-      console.log("LEGAL WAVE THINKS WE'RE DONE");
-
-      if (error) {
-        console.log(error);
-        setLoading(false);
-        return;
-      }
-
       try {
         const amountInCents = currency(data.amount, {
           errorOnInvalid: true,
         }).intValue;
 
-        const response = await fetch("/api/complete-payment", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            amount: amountInCents,
-            email: data.email,
-            name: data.name,
-            paymentToken,
-            paymentMethod: hostedFieldsState?.paymentMethod,
-            savePaymentMethod: data.savePaymentMethod,
-            sendReceipt: data.sendReceipt,
-          }),
-        });
+        // Check if using a stored payment method
+        if (selectedStoredMethod && selectedStoredMethod !== "new") {
+          // Use stored payment method flow
+          const response = await fetch("/api/spm-payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              storedPaymentMethodId: selectedStoredMethod,
+              amount: amountInCents,
+              email: data.email,
+              sendReceipt: data.sendReceipt,
+            }),
+          });
 
-        // const json = await handleJsonResponse(response);
+          if (response.ok) {
+            setResult(await response.json());
+          } else {
+            const error = await response.json();
+            setError(error.error || "Payment failed");
+          }
+        } else {
+          // Use new card/bank account flow
+          console.log("LEGAL WAVE ABOUT TO SUBMIT");
+          const { error } = await window.gravityLegal.submitFields();
+          console.log("LEGAL WAVE THINKS WE'RE DONE");
 
-        if (response.ok) {
-          setResult(await response.json());
+          if (error) {
+            console.log(error);
+            setLoading(false);
+            return;
+          }
+
+          const response = await fetch("/api/complete-payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              amount: amountInCents,
+              email: data.email,
+              name: data.name,
+              paymentToken,
+              paymentMethod: hostedFieldsState?.paymentMethod,
+              savePaymentMethod: data.savePaymentMethod,
+              sendReceipt: data.sendReceipt,
+            }),
+          });
+
+          if (response.ok) {
+            setResult(await response.json());
+          }
+
+          console.log(response);
         }
-
-        console.log(response);
       } catch (e) {
         console.log("error: ", e);
         setError(e);
