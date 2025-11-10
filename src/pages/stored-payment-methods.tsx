@@ -154,7 +154,7 @@ const StoredPaymentMethodsPage: NextPage = () => {
                     <Th>Type</Th>
                     <Th>Last 4</Th>
                     <Th>Status</Th>
-                    <Th width='100px'>Actions</Th>
+                    <Th width='100px' textAlign='center'>Actions</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -162,23 +162,20 @@ const StoredPaymentMethodsPage: NextPage = () => {
                     <Tr key={method.id}>
                       <Td>{method.payerName || '-'}</Td>
                       <Td>
-                        {method.cardBrand || method.paymentMethod || 'Card'}
+                        {method.cardBrand?.toUpperCase() || method.paymentMethod?.toUpperCase() || 'Null'}
                       </Td>
                       <Td>{method.lastFour}</Td>
                       <Td>
                         <Text
                           color={method.status === 'active' ? 'green.500' : 'red.500'}
-                          fontWeight='medium'
+                          fontWeight='bold'
                         >
-                          {method.status}
+                          {method.status.toUpperCase()}
                         </Text>
                       </Td>
-                      <Td>
+                      <Td textAlign='center'>
                         <Button
                           size='sm'
-                          // TODO - fix the color scheme
-                          colorScheme={method.status === 'active' ? 'red' : 'green'}
-                          variant='ghost'
                           onClick={() => handleToggleStatus(method.id, method.status)}
                         >
                           {method.status === 'active' ? 'Deactivate' : 'Activate'}
