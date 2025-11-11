@@ -21,21 +21,31 @@ export const getServerSideProps = requireAuth(async ({ session }) => {
   // from the current authenticated user
   const firmToken = session.user!.firm.glApiToken as string;
 
-  // start a payment session
-  const paymentToken = await createPaymentToken({
-    firmToken,
-  });
+  try {
+    // start a payment session
+    const paymentToken = await createPaymentToken({
+      firmToken,
+    });
 
-  return {
-    props: {
-      paymentToken,
-    },
-  };
+    return {
+      props: {
+        paymentToken,
+        error: null,
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        paymentToken: null,
+        error: 'No operating accounts exist. Please configure an operating account first.',
+      },
+    };
+  }
 });
 
 export const PaymentIntentPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ paymentToken }) => {
+> = ({ paymentToken, error }) => {
   return (
     <Layout>
       <Container py={{ base: '16', md: '24' }}>
@@ -66,7 +76,11 @@ export const PaymentIntentPage: NextPage<
               </ListItem>
             </List>
           </Stack>
-          <PaymentForm paymentToken={paymentToken} />
+          {error ? (
+            <Text color='red.500'>{error}</Text>
+          ) : (
+            <PaymentForm paymentToken={paymentToken} />
+          )}
         </SimpleGrid>
       </Container>
     </Layout>

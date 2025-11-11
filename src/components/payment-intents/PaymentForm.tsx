@@ -1,6 +1,7 @@
 import HostedFieldInput from "@/components/HostedFieldInput";
 import { CreditCardBrandIcon } from "@/components/credit-cards/CreditCardBrandIcon";
 import { useConfidoLegal } from "@/confido-legal-hook/useConfidoLegal";
+import { StoredPaymentMethodForList } from "@/confido-legal-requests/getStoredPaymentMethods";
 import {
   Alert,
   AlertIcon,
@@ -16,6 +17,8 @@ import {
   InputGroup,
   InputLeftAddon,
   InputRightElement,
+  Radio,
+  RadioGroup,
   Spinner,
   Stack,
   Tab,
@@ -27,7 +30,7 @@ import {
 } from "@chakra-ui/react";
 import currency from "currency.js";
 import { useRouter } from "next/router";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import ControlledCheckbox from "../ui/ControlledCheckbox";
 import { ExternalIdLookup } from "./ExternalIdLookup";
@@ -60,11 +63,28 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
   const [formType, setFormType] = useState<"card" | "ach">("card");
   const [result, setResult] = useState<PaymentResult>();
   const [error, setError] = useState<any>(null);
+  const [storedPaymentMethods, setStoredPaymentMethods] = useState<StoredPaymentMethodForList[]>([]);
+  const [selectedStoredMethod, setSelectedStoredMethod] = useState<string>("new");
 
   const { state: hostedFieldsState } = useConfidoLegal({
     paymentToken,
     formType,
   });
+
+  useEffect(() => {
+    const fetchStoredMethods = async () => {
+      const response = await fetch('/api/stored-payment-methods/list');
+      const data = await response.json();
+      if (response.ok && !data.error) {
+        // Only show active payment methods
+        const activeMethods = data.filter((m: StoredPaymentMethodForList) =>
+          m.status.toLowerCase() === 'active'
+        );
+        setStoredPaymentMethods(activeMethods);
+      }
+    };
+    fetchStoredMethods();
+  }, []);
 
   const handleTabsChange = (index: number) => {
     setFormType(index === 0 ? "card" : "ach");
@@ -74,44 +94,67 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
     async (data) => {
       setLoading(true);
 
-      console.log("LEGAL WAVE ABOUT TO SUBMIT");
-      const { error } = await window.gravityLegal.submitFields();
-      console.log("LEGAL WAVE THINKS WE'RE DONE");
-
-      if (error) {
-        console.log(error);
-        setLoading(false);
-        return;
-      }
-
       try {
         const amountInCents = currency(data.amount, {
           errorOnInvalid: true,
         }).intValue;
 
-        const response = await fetch("/api/complete-payment", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            amount: amountInCents,
-            email: data.email,
-            name: data.name,
-            paymentToken,
-            paymentMethod: hostedFieldsState?.paymentMethod,
-            savePaymentMethod: data.savePaymentMethod,
-            sendReceipt: data.sendReceipt,
-          }),
-        });
+        // Check if using a stored payment method
+        if (selectedStoredMethod && selectedStoredMethod !== "new") {
+          // Use stored payment method flow
+          const response = await fetch("/api/spm-payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              storedPaymentMethodId: selectedStoredMethod,
+              amount: amountInCents,
+              email: data.email,
+              sendReceipt: data.sendReceipt,
+            }),
+          });
 
-        // const json = await handleJsonResponse(response);
+          if (response.ok) {
+            setResult(await response.json());
+          } else {
+            const error = await response.json();
+            setError(error.error || "Payment failed");
+          }
+        } else {
+          // Use new card/bank account flow
+          console.log("LEGAL WAVE ABOUT TO SUBMIT");
+          const { error } = await window.gravityLegal.submitFields();
+          console.log("LEGAL WAVE THINKS WE'RE DONE");
 
-        if (response.ok) {
-          setResult(await response.json());
+          if (error) {
+            console.log(error);
+            setLoading(false);
+            return;
+          }
+
+          const response = await fetch("/api/complete-payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              amount: amountInCents,
+              email: data.email,
+              name: data.name,
+              paymentToken,
+              paymentMethod: hostedFieldsState?.paymentMethod,
+              savePaymentMethod: data.savePaymentMethod,
+              sendReceipt: data.sendReceipt,
+            }),
+          });
+
+          if (response.ok) {
+            setResult(await response.json());
+          }
+
+          console.log(response);
         }
-
-        console.log(response);
       } catch (e) {
         console.log("error: ", e);
         setError(e);
@@ -213,12 +256,30 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
 
               <Divider />
 
-              <Tabs
-                colorScheme="blue"
-                index={formType === "card" ? 0 : 1}
-                variant="soft-rounded"
-                onChange={handleTabsChange}
-              >
+              <FormControl>
+                <FormLabel>Payment Method</FormLabel>
+                <RadioGroup value={selectedStoredMethod} onChange={setSelectedStoredMethod}>
+                  <Stack spacing={3}>
+                    {storedPaymentMethods.map((method) => (
+                      <Radio key={method.id} value={method.id}>
+                        {method.cardBrand || method.paymentMethod} ending in {method.lastFour}
+                        {method.payerName && ` (${method.payerName})`}
+                      </Radio>
+                    ))}
+                    <Radio value="new">Enter a new payment method</Radio>
+                  </Stack>
+                </RadioGroup>
+              </FormControl>
+
+              <Divider />
+
+              {selectedStoredMethod === "new" && (
+                <Tabs
+                  colorScheme="blue"
+                  index={formType === "card" ? 0 : 1}
+                  variant="soft-rounded"
+                  onChange={handleTabsChange}
+                >
                 <TabList>
                   <Tab>Card</Tab>
                   <Tab>Bank Account</Tab>
@@ -273,7 +334,8 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
                     </Stack>
                   </TabPanel>
                 </TabPanels>
-              </Tabs>
+                </Tabs>
+              )}
 
               <Stack spacing={2}>
                 <Checkbox {...register("savePaymentMethod")}>
