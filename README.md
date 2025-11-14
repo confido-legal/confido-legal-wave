@@ -14,7 +14,7 @@ You will need a Partner account in our sandbox environment to run Legal Wave loc
 4. Paste your token into `.env.local`
 
 ```
-GL_PARTNER_TOKEN=p_secret_xxxxxxxxxxxxx
+CONFIDO_PARTNER_TOKEN=p_secret_xxxxxxxxxxxxx
 ```
 
 5. Run `npm install` to install dependencies

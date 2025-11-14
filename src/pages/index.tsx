@@ -10,7 +10,7 @@ import { InferGetServerSidePropsType } from 'next';
 
 export const getServerSideProps = requireAuth(async () => {
   const partner = await getMyPartner();
-  const connectUrl = `${process.env.NEXT_PUBLIC_GL_APP_DOMAIN}/connect/${partner.appId}`;
+  const connectUrl = `${process.env.NEXT_PUBLIC_CONFIDO_APP_DOMAIN}/connect/${partner.appId}`;
 
   return {
     props: {
