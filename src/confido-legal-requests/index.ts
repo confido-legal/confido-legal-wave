@@ -20,7 +20,8 @@ export * from './getMyPartner';
 export * from './payRequestList';
 
 export const gqlEndpoint =
-  process.env.GL_API_ENDPOINT ?? 'https://api.sandbox.gravity-legal.com/v2';
+  process.env.CONFIDO_API_ENDPOINT ??
+  'https://api.sandbox.gravity-legal.com/v2';
 
 const methods = {
   completeSavePaymentMethod,
