@@ -1,9 +1,10 @@
-import gravitylegal, {
+import {
   Payment,
+  paymentSessionComplete,
   PaymentSessionCompleteInput,
-} from "@/confido-legal-requests";
-import { getSessionFromRequestOrThrow } from "@/lib/session";
-import type { NextApiRequest, NextApiResponse } from "next";
+} from '@/confido-legal-requests/paymentSessionComplete';
+import { getSessionFromRequestOrThrow } from '@/lib/session';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(
   req: NextApiRequest,
@@ -23,9 +24,10 @@ export default async function handler(
     sendReceipt: body.sendReceipt,
   };
 
-  const result = await gravitylegal.paymentSessionComplete(
+  const result = await paymentSessionComplete(
     firmToken,
     paymentSessionCompleteInput
   );
+
   res.status(200).json(result.paymentSessionComplete);
 }
