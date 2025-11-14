@@ -1,4 +1,5 @@
-import { PaymentMethod, gqlEndpoint } from '@/confido-legal-requests';
+import { PaymentMethod } from '@/confido-legal-hook/ConfidoLegal';
+import { gqlEndpoint } from '@/confido-legal-requests';
 import { GraphQLClient, gql } from 'graphql-request';
 
 const COMPLETE_SAVE_PAYMENT_METHOD = gql`

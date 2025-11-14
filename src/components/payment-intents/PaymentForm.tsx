@@ -1,6 +1,6 @@
-import HostedFieldInput from "@/components/HostedFieldInput";
-import { CreditCardBrandIcon } from "@/components/credit-cards/CreditCardBrandIcon";
-import { useConfidoLegal } from "@/confido-legal-hook/useConfidoLegal";
+import HostedFieldInput from '@/components/HostedFieldInput';
+import { CreditCardBrandIcon } from '@/components/credit-cards/CreditCardBrandIcon';
+import { useConfidoLegal } from '@/confido-legal-hook/useConfidoLegal';
 import {
   Alert,
   AlertIcon,
@@ -24,13 +24,13 @@ import {
   TabPanels,
   Tabs,
   Text,
-} from "@chakra-ui/react";
-import currency from "currency.js";
-import { useRouter } from "next/router";
-import { FC, useState } from "react";
-import { useForm } from "react-hook-form";
-import ControlledCheckbox from "../ui/ControlledCheckbox";
-import { ExternalIdLookup } from "./ExternalIdLookup";
+} from '@chakra-ui/react';
+import currency from 'currency.js';
+import { useRouter } from 'next/router';
+import { FC, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import ControlledCheckbox from '../ui/ControlledCheckbox';
+import { ExternalIdLookup } from './ExternalIdLookup';
 
 interface FormData {
   amount: string;
@@ -42,7 +42,7 @@ interface FormData {
 
 interface PaymentResult {
   amountProcessed: number;
-  status: "success" | "partial_success" | "failure";
+  status: 'success' | 'partial_success' | 'failure';
 }
 
 export interface PaymentFormProps {
@@ -57,7 +57,7 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
     },
   });
   const [loading, setLoading] = useState(false);
-  const [formType, setFormType] = useState<"card" | "ach">("card");
+  const [formType, setFormType] = useState<'card' | 'ach'>('card');
   const [result, setResult] = useState<PaymentResult>();
   const [error, setError] = useState<any>(null);
 
@@ -67,14 +67,14 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
   });
 
   const handleTabsChange = (index: number) => {
-    setFormType(index === 0 ? "card" : "ach");
+    setFormType(index === 0 ? 'card' : 'ach');
   };
 
   const submitHandler = handleSubmit(
     async (data) => {
       setLoading(true);
 
-      console.log("LEGAL WAVE ABOUT TO SUBMIT");
+      console.log('LEGAL WAVE ABOUT TO SUBMIT');
       const { error } = await window.gravityLegal.submitFields();
       console.log("LEGAL WAVE THINKS WE'RE DONE");
 
@@ -89,10 +89,10 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
           errorOnInvalid: true,
         }).intValue;
 
-        const response = await fetch("/api/complete-payment", {
-          method: "POST",
+        const response = await fetch('/api/complete-payment', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             amount: amountInCents,
@@ -113,30 +113,30 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
 
         console.log(response);
       } catch (e) {
-        console.log("error: ", e);
+        console.log('error: ', e);
         setError(e);
       } finally {
         setLoading(false);
       }
     },
     (data) => {
-      console.log("invlaid", data);
+      console.log('invlaid', data);
     }
   );
 
-  const sendReceipt = watch("sendReceipt");
+  const sendReceipt = watch('sendReceipt');
 
   return (
-    <Stack spacing={{ base: "8", lg: "6" }} height="full">
+    <Stack spacing={{ base: '8', lg: '6' }} height='full'>
       {hostedFieldsState?.loadError && (
-        <Alert status="error" variant="solid">
+        <Alert status='error' variant='solid'>
           <AlertIcon />
           <span>{hostedFieldsState.loadError.message}</span>
         </Alert>
       )}
 
       {error && (
-        <Alert status="error" variant="solid">
+        <Alert status='error' variant='solid'>
           <AlertIcon />
           <span>{error}</span>
         </Alert>
@@ -144,24 +144,24 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
 
       {result && (
         <Box
-          py={{ base: "0", sm: "8" }}
-          px={{ base: "4", sm: "10" }}
-          bg={{ base: "white" }}
-          boxShadow={{ base: "none", sm: "md" }}
-          borderRadius={{ base: "none", sm: "xl" }}
-          position="relative"
-          width="lg"
+          py={{ base: '0', sm: '8' }}
+          px={{ base: '4', sm: '10' }}
+          bg={{ base: 'white' }}
+          boxShadow={{ base: 'none', sm: 'md' }}
+          borderRadius={{ base: 'none', sm: 'xl' }}
+          position='relative'
+          width='lg'
         >
-          <Stack spacing="6">
-            <Heading textAlign="center">Success!</Heading>
+          <Stack spacing='6'>
+            <Heading textAlign='center'>Success!</Heading>
             <Text>Result:</Text>
-            <Code display="block" whiteSpace="pre" p={4} fontSize="xs">
+            <Code display='block' whiteSpace='pre' p={4} fontSize='xs'>
               {JSON.stringify(result, null, 2)}
             </Code>
 
             <ExternalIdLookup />
 
-            <Button variant="solid" onClick={() => router.reload()}>
+            <Button variant='solid' onClick={() => router.reload()}>
               Collect more
             </Button>
           </Stack>
@@ -170,25 +170,25 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
 
       {!result && (
         <Box
-          py={{ base: "0", sm: "8" }}
-          px={{ base: "4", sm: "10" }}
-          bg={{ base: "white" }}
-          boxShadow={{ base: "none", sm: "md" }}
-          borderRadius={{ base: "none", sm: "xl" }}
-          position="relative"
-          width="lg"
+          py={{ base: '0', sm: '8' }}
+          px={{ base: '4', sm: '10' }}
+          bg={{ base: 'white' }}
+          boxShadow={{ base: 'none', sm: 'md' }}
+          borderRadius={{ base: 'none', sm: 'xl' }}
+          position='relative'
+          width='lg'
         >
           <form onSubmit={submitHandler}>
-            <Stack spacing="6">
+            <Stack spacing='6'>
               <FormControl>
-                <FormLabel htmlFor="amount">Amount</FormLabel>
+                <FormLabel htmlFor='amount'>Amount</FormLabel>
                 <InputGroup>
                   <InputLeftAddon>USD</InputLeftAddon>
                   <Input
-                    id="amount"
-                    type="text"
-                    placeholder="$10.00"
-                    {...register("amount", { required: true })}
+                    id='amount'
+                    type='text'
+                    placeholder='$10.00'
+                    {...register('amount', { required: true })}
                   />
                 </InputGroup>
                 {hostedFieldsState?.surcharging.willBeApplied && (
@@ -199,24 +199,24 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
                 )}
               </FormControl>
 
-              <Stack spacing="5">
+              <Stack spacing='5'>
                 <FormControl>
-                  <FormLabel htmlFor="email">Name</FormLabel>
-                  <Input id="name" {...register("name")} />
+                  <FormLabel htmlFor='email'>Name</FormLabel>
+                  <Input id='name' {...register('name')} />
                 </FormControl>
 
                 <FormControl>
-                  <FormLabel htmlFor="email">Email for receipt</FormLabel>
-                  <Input id="email" type="email" {...register("email")} />
+                  <FormLabel htmlFor='email'>Email for receipt</FormLabel>
+                  <Input id='email' type='email' {...register('email')} />
                 </FormControl>
               </Stack>
 
               <Divider />
 
               <Tabs
-                colorScheme="blue"
-                index={formType === "card" ? 0 : 1}
-                variant="soft-rounded"
+                colorScheme='blue'
+                index={formType === 'card' ? 0 : 1}
+                variant='soft-rounded'
                 onChange={handleTabsChange}
               >
                 <TabList>
@@ -225,49 +225,59 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
                 </TabList>
                 <TabPanels mt={2}>
                   <TabPanel px={0}>
-                    <Stack spacing="5">
+                    <Stack spacing='5'>
                       <HostedFieldInput
-                        id="card-number"
-                        label="Card Number"
+                        id='card-number'
+                        label='Card Number'
                         fieldState={hostedFieldsState?.fields.cardNumber}
                         rightElement={
-                          <InputRightElement pointerEvents="none" p={2} w={14}>
+                          <InputRightElement pointerEvents='none' p={2} w={14}>
                             <CreditCardBrandIcon
-                              className="w-full"
+                              className='w-full'
                               brand={hostedFieldsState?.cardData?.brand}
                             />
                           </InputRightElement>
                         }
                       />
+                      {hostedFieldsState?.surcharging.willBeApplied && (
+                        <Text fontSize='sm' color='gray.600'>
+                          {hostedFieldsState?.surcharging.willBeApplied && (
+                            <div>
+                              a {hostedFieldsState.surcharging.rate! * 100}%
+                              surcharging fee will be added
+                            </div>
+                          )}
+                        </Text>
+                      )}
                       <HostedFieldInput
-                        id="card-exp"
-                        label="Exp"
+                        id='card-exp'
+                        label='Exp'
                         fieldState={
                           hostedFieldsState?.fields.cardExpirationDate
                         }
                       />
                       <HostedFieldInput
-                        id="card-cvv"
-                        label="CVV"
+                        id='card-cvv'
+                        label='CVV'
                         fieldState={hostedFieldsState?.fields.cardSecurityCode}
                       />
                     </Stack>
                   </TabPanel>
                   <TabPanel px={0}>
-                    <Stack spacing="5">
+                    <Stack spacing='5'>
                       <HostedFieldInput
-                        id="account-holder-name"
-                        label="Account Name"
+                        id='account-holder-name'
+                        label='Account Name'
                         fieldState={hostedFieldsState?.fields.accountHolderName}
                       />
                       <HostedFieldInput
-                        id="account-number"
-                        label="Account Number"
+                        id='account-number'
+                        label='Account Number'
                         fieldState={hostedFieldsState?.fields.accountNumber}
                       />
                       <HostedFieldInput
-                        id="routing-number"
-                        label="Routing Number"
+                        id='routing-number'
+                        label='Routing Number'
                         fieldState={hostedFieldsState?.fields.routingNumber}
                       />
                     </Stack>
@@ -276,12 +286,12 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
               </Tabs>
 
               <Stack spacing={2}>
-                <Checkbox {...register("savePaymentMethod")}>
+                <Checkbox {...register('savePaymentMethod')}>
                   Store payment method
                 </Checkbox>
                 <ControlledCheckbox
                   control={control}
-                  name="sendReceipt"
+                  name='sendReceipt'
                   checkboxProps={{
                     isIndeterminate: sendReceipt === undefined,
                   }}
@@ -289,27 +299,27 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
                   Send receipt (
                   <Code>
                     {sendReceipt === undefined
-                      ? "null"
+                      ? 'null'
                       : sendReceipt.toString()}
                   </Code>
                   )
                 </ControlledCheckbox>
               </Stack>
-              <Stack spacing="6">
-                <Button colorScheme="blue" type="submit" variant="solid">
+              <Stack spacing='6'>
+                <Button colorScheme='blue' type='submit' variant='solid'>
                   Run payment
                 </Button>
               </Stack>
             </Stack>
           </form>
           {loading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-opacity-30 bg-slate-500">
+            <div className='absolute inset-0 flex items-center justify-center bg-opacity-30 bg-slate-500'>
               <Spinner
-                thickness="4px"
-                speed="0.65s"
-                emptyColor="gray.200"
-                color="blue.500"
-                size="xl"
+                thickness='4px'
+                speed='0.65s'
+                emptyColor='gray.200'
+                color='blue.500'
+                size='xl'
               />
             </div>
           )}

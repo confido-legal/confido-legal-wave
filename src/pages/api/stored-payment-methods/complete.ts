@@ -1,4 +1,5 @@
-import confido, { PaymentMethod } from '@/confido-legal-requests';
+import { PaymentMethod } from '@/confido-legal-hook/ConfidoLegal';
+import confido from '@/confido-legal-requests';
 import { getSessionFromRequestOrThrow } from '@/lib/session';
 import type { NextApiRequest, NextApiResponse } from 'next';
 

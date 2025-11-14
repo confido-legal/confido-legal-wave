@@ -1,5 +1,5 @@
 import { useConfidoLegal } from '@/confido-legal-hook/useConfidoLegal';
-import { StoredPaymentMethodForRunPayment } from '@/confido-legal-requests';
+import { StoredPaymentMethod } from '@/confido-legal-requests';
 import { handleJsonResponse } from '@/lib/handleJsonResponse';
 import {
   Button,
@@ -81,9 +81,7 @@ const StorePaymentMethodForm: FC<StorePaymentMethodFormProps> = ({
   const { register, handleSubmit } = useForm<FormData>();
   const [formType, setFormType] = useState<'card' | 'ach'>('card');
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<StoredPaymentMethodForRunPayment | null>(
-    null
-  );
+  const [result, setResult] = useState<StoredPaymentMethod | null>(null);
   const [error, setError] = useState<any>(null);
 
   const { state: hostedFieldsState } = useConfidoLegal({
@@ -122,8 +120,7 @@ const StorePaymentMethodForm: FC<StorePaymentMethodFormProps> = ({
           }),
         });
 
-        const result =
-          await handleJsonResponse<StoredPaymentMethodForRunPayment>(response);
+        const result = await handleJsonResponse<StoredPaymentMethod>(response);
         console.log(result);
         setResult(result);
       } catch (e) {
