@@ -1,7 +1,7 @@
 import { Divider, Flex, Stack } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { FiCreditCard, FiDollarSign, FiHome } from 'react-icons/fi';
+import { FiCreditCard, FiDollarSign, FiHome, FiUser } from 'react-icons/fi';
 import { Logo2 } from './Logo';
 import { NavButton } from './NavButton';
 import { useSession } from './SessionProvider';
@@ -49,6 +49,14 @@ export const Sidebar = () => {
                   label='Stored Payment Methods'
                   icon={FiCreditCard}
                   isActive={isActive('/stored-payment-methods')}
+                />
+              </Link>
+
+              <Link href='/clients'>
+                <NavButton
+                  label='Clients'
+                  icon={FiUser}
+                  isActive={isActive('/clients')}
                 />
               </Link>
             </Stack>

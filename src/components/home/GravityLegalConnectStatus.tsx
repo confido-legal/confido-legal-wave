@@ -1,5 +1,6 @@
 import { useSession } from '@/components/layout/SessionProvider';
 import {
+  Alert,
   Badge,
   Box,
   Button,
@@ -7,6 +8,8 @@ import {
   Stack,
   StackDivider,
   Text,
+  Link,
+  AlertIcon,
 } from '@chakra-ui/react';
 import { FC, useState } from 'react';
 import OnboardingFormModal from '../onboarding-form/OnboardingFormModal';
@@ -77,9 +80,27 @@ export const GravityLegalConnectionStatus: FC = (props) => {
                 <Box>{applicationBadge()}</Box>
               </Stack>
               {!glFirm?.isAcceptingPayments && (
-                <Button onClick={() => setShowOnboardingModal(true)}>
-                  Complete application
-                </Button>
+                <Stack spacing='4'>
+                  <Button onClick={() => setShowOnboardingModal(true)}>
+                    Complete application
+                  </Button>
+                  <Alert status='info'>
+                    <AlertIcon />
+                    <Text textStyle='sm'>
+                      You can activate the firm using sandbox tools in the{' '}
+                      <Link
+                        color='blue.500'
+                        href='https://app.sandbox.confidolegal.com'
+                        isExternal
+                      >
+                        sandbox
+                      </Link>{' '}
+                      when emulating an admin for your firm. If you want to fill
+                      out the application faster, there is also an autofill
+                      feature in the sandbox.
+                    </Text>
+                  </Alert>
+                </Stack>
               )}
             </Stack>
           </Box>
