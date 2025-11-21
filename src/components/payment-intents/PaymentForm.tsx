@@ -3,6 +3,7 @@ import { CreditCardBrandIcon } from '@/components/credit-cards/CreditCardBrandIc
 import { useConfidoLegal } from '@/confido-legal-hook/useConfidoLegal';
 import {
   Alert,
+  AlertDescription,
   AlertIcon,
   Box,
   Button,
@@ -27,7 +28,7 @@ import {
 } from '@chakra-ui/react';
 import currency from 'currency.js';
 import { useRouter } from 'next/router';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import ControlledCheckbox from '../ui/ControlledCheckbox';
 import { ExternalIdLookup } from './ExternalIdLookup';
@@ -61,7 +62,7 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
   const [result, setResult] = useState<PaymentResult>();
   const [error, setError] = useState<any>(null);
 
-  const { state: hostedFieldsState } = useConfidoLegal({
+  const { hf, state: hostedFieldsState } = useConfidoLegal({
     paymentToken,
     formType,
   });
@@ -74,9 +75,7 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
     async (data) => {
       setLoading(true);
 
-      console.log('LEGAL WAVE ABOUT TO SUBMIT');
       const { error } = await window.gravityLegal.submitFields();
-      console.log("LEGAL WAVE THINKS WE'RE DONE");
 
       if (error) {
         console.log(error);
@@ -125,6 +124,17 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
   );
 
   const sendReceipt = watch('sendReceipt');
+  const amount = watch('amount');
+
+  useEffect(() => {
+    const cents = currency(amount || '0', { errorOnInvalid: false }).intValue;
+
+    if (cents >= 0) {
+      hf.recalculateSurcharging({
+        principalAmount: cents,
+      });
+    }
+  }, [amount, hf]);
 
   return (
     <Stack spacing={{ base: '8', lg: '6' }} height='full'>
@@ -240,14 +250,16 @@ export const PaymentForm: FC<PaymentFormProps> = ({ paymentToken }) => {
                         }
                       />
                       {hostedFieldsState?.surcharging.willBeApplied && (
-                        <Text fontSize='sm' color='gray.600'>
-                          {hostedFieldsState?.surcharging.willBeApplied && (
-                            <div>
-                              a {hostedFieldsState.surcharging.rate! * 100}%
-                              surcharging fee will be added
-                            </div>
-                          )}
-                        </Text>
+                        <Alert status='info'>
+                          <AlertIcon />
+                          <AlertDescription>
+                            A fee of{' $'}
+                          {(
+                            hostedFieldsState.surcharging.amount!.fee / 100
+                          ).toFixed(2)}{' '}
+                          will be added to your total.
+                          </AlertDescription>
+                        </Alert>    
                       )}
                       <HostedFieldInput
                         id='card-exp'

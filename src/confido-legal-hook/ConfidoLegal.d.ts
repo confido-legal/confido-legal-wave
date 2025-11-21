@@ -4,6 +4,7 @@ declare global {
       addChangeListener: (cb: OnChangeCb) => void;
       getState: () => HostedFieldsState;
       init: (options: Options) => void;
+      recalculateSurcharging: (opts: SurchargingOptions) => void;
       removeChangeListener: (cb: OnChangeCb) => void;
       setActiveForm: (form: FormType) => void;
       submitFields: () => Promise<SubmitFieldsResult>;
@@ -77,7 +78,13 @@ interface Options {
     routingNumber?: FieldConfig;
     accountHolderName?: FieldConfig;
   };
+  surchargingOptions?: SurchargingOptions;
 }
+
+type SurchargingOptions = {
+  principalAmount?: number;
+  surchargeRegion?: string;
+};
 
 export interface HostedFieldsState {
   activeForm: FormType;
@@ -97,6 +104,9 @@ export interface HostedFieldsState {
   paymentMethod?: PaymentMethod;
   surcharging: {
     active: boolean;
+    amount: {
+      fee: number;
+    } | null;
     willBeApplied: boolean;
     rate?: number;
   };

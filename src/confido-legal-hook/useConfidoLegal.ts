@@ -1,20 +1,46 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ChangeEvent, HostedFieldsState } from './ConfidoLegal';
 
 export interface Params {
+  formType: 'card' | 'ach';
   paymentToken?: string;
   savePaymentMethodToken?: string;
-  formType: 'card' | 'ach';
+  surchargingOptions?: {
+    principalAmount?: number;
+    surchargeRegion?: string;
+  };
 }
 
-export const useConfidoLegal = (
-  params: Params
-): { state: HostedFieldsState | undefined } => {
+type UseConfidoLegalReturn = {
+  state: HostedFieldsState | undefined;
+  hf: typeof window.gravityLegal;
+};
+
+export const useConfidoLegal = (params: Params): UseConfidoLegalReturn => {
+  const memoizedParams = useMemo(
+    () => ({
+      formType: params.formType,
+      paymentToken: params.paymentToken,
+      savePaymentMethodToken: params.savePaymentMethodToken,
+      surchargingOptions: {
+        principalAmount: params.surchargingOptions?.principalAmount,
+        surchargeRegion: params.surchargingOptions?.surchargeRegion,
+      },
+    }),
+    [
+      params.formType,
+      params.paymentToken,
+      params.savePaymentMethodToken,
+      params.surchargingOptions?.principalAmount,
+      params.surchargingOptions?.surchargeRegion,
+    ]
+  );
+
   const [hostedFieldsState, setHostedFieldsState] =
     useState<HostedFieldsState>();
 
   useEffect(() => {
-    const gl = window.gravityLegal;
+    const hf = window.gravityLegal;
 
     const listener = (e: ChangeEvent) => {
       const { state } = e;
@@ -22,7 +48,7 @@ export const useConfidoLegal = (
       setHostedFieldsState(state);
     };
 
-    gl.addChangeListener(listener);
+    hf.addChangeListener(listener);
 
     const fieldStyle = {
       border: 'none',
@@ -35,10 +61,10 @@ export const useConfidoLegal = (
       'font-size': '16px',
     };
 
-    gl.init({
-      paymentToken: params.paymentToken,
-      savePaymentMethodToken: params.savePaymentMethodToken,
-      activeForm: params.formType,
+    hf.init({
+      paymentToken: memoizedParams.paymentToken,
+      savePaymentMethodToken: memoizedParams.savePaymentMethodToken,
+      activeForm: memoizedParams.formType,
       fields: {
         accountNumber: {
           containerId: 'account-number',
@@ -65,12 +91,14 @@ export const useConfidoLegal = (
           style: fieldStyle,
         },
       },
+      surchargingOptions: memoizedParams.surchargingOptions,
     });
 
-    return () => gl.removeChangeListener(listener);
-  }, [params.formType, params.paymentToken, params.savePaymentMethodToken]);
+    return () => hf.removeChangeListener(listener);
+  }, [memoizedParams]);
 
   return {
+    hf: window.gravityLegal,
     state: hostedFieldsState,
   };
 };
