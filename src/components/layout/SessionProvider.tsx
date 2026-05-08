@@ -16,7 +16,6 @@ export interface Session {
   };
   firm?: {
     id: string;
-    glApiToken: string;
     name: string;
   };
   glFirm?: {

@@ -1,6 +1,8 @@
 import { PasswordField } from '@/components/auth/PasswordField';
 import { Logo } from '@/components/layout/Logo';
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
   Container,
@@ -15,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { NextPage } from 'next';
 import Link from 'next/link';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface FormData {
@@ -24,17 +27,25 @@ interface FormData {
 
 const LoginPage: NextPage = () => {
   const { register, handleSubmit } = useForm<FormData>();
+  const [error, setError] = useState<string | null>(null);
 
   const submitHandler = handleSubmit(async (data) => {
+    setError(null);
     try {
       const result = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
+
+      if (!result.ok) {
+        setError('Invalid username or password.');
+        return;
+      }
+
       window.location.href = '/';
     } catch (e) {
-      console.log(e);
+      setError('Unable to reach the server. Please try again.');
     }
   });
 
@@ -72,6 +83,12 @@ const LoginPage: NextPage = () => {
             borderRadius={{ base: 'none', sm: 'xl' }}
           >
             <Stack spacing='6'>
+              {error && (
+                <Alert status='error' borderRadius='md'>
+                  <AlertIcon />
+                  {error}
+                </Alert>
+              )}
               <Stack spacing='5'>
                 <FormControl>
                   <FormLabel htmlFor='username'>Username</FormLabel>

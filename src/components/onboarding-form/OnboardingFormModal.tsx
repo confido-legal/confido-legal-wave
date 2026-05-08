@@ -11,11 +11,13 @@ import LazyContent from '../ui/LazyContent';
 export interface OnboardingFormModalProps {
   isOpen: boolean;
   onClose: () => void;
+  readOnly?: boolean;
 }
 
 const OnboardingFormModal: FC<OnboardingFormModalProps> = ({
   isOpen,
   onClose,
+  readOnly,
 }) => {
   const [token, setToken] = useState<string | null>(null);
 
@@ -45,7 +47,9 @@ const OnboardingFormModal: FC<OnboardingFormModalProps> = ({
         <ModalBody>
           <Container centerContent pt={12} pb={48}>
             <LazyContent>
-              {() => <OnboardingFormRenderer token={token} />}
+              {() => (
+                <OnboardingFormRenderer token={token} readOnly={readOnly} />
+              )}
             </LazyContent>
           </Container>
         </ModalBody>
@@ -56,15 +60,20 @@ const OnboardingFormModal: FC<OnboardingFormModalProps> = ({
 
 export interface OnboardingFormRendererProps {
   token: string | null;
+  readOnly?: boolean;
 }
 
-const OnboardingFormRenderer: FC<OnboardingFormRendererProps> = ({ token }) => {
+const OnboardingFormRenderer: FC<OnboardingFormRendererProps> = ({
+  token,
+  readOnly,
+}) => {
   useEffect(() => {
     if (token) {
       window.confidoOnboarding.renderForm({
         containerId: 'confido-onboarding-form',
         token,
         disableOwnerInvite: true,
+        readOnly,
         onChange: (event) => console.log('change', event),
         style: {
           theme: {
@@ -85,7 +94,7 @@ const OnboardingFormRenderer: FC<OnboardingFormRendererProps> = ({ token }) => {
         },
       });
     }
-  }, [token]);
+  }, [readOnly, token]);
 
   return <div id='confido-onboarding-form' />;
 };

@@ -1,10 +1,14 @@
 import { Layout } from '@/components/layout/Layout';
 import { createPaymentToken } from '@/confido-legal-requests/createPaymentToken';
+import { getErrorMessage } from '@/lib/getErrorMessage';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 
 import { PaymentForm } from '@/components/payment-intents/PaymentForm';
 import { requireAuth } from '@/lib/session';
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
   Container,
   Heading,
   List,
@@ -17,25 +21,41 @@ import {
 import { MdCheckCircle } from 'react-icons/md';
 
 export const getServerSideProps = requireAuth(async ({ session }) => {
-  // grab the Gravity Legal Firm Token
-  // from the current authenticated user
-  const firmToken = session.user!.firm.glApiToken as string;
+  const firmToken = session.user!.firm.glApiToken;
 
-  // start a payment session
-  const paymentToken = await createPaymentToken({
-    firmToken,
-  });
+  if (!firmToken) {
+    return {
+      props: {
+        paymentToken: null,
+        error: 'Your firm is not connected to Confido Legal. Please complete the connection setup on the home page first.',
+      },
+    };
+  }
 
-  return {
-    props: {
-      paymentToken,
-    },
-  };
+  try {
+    const paymentToken = await createPaymentToken({ firmToken });
+
+    return {
+      props: {
+        paymentToken,
+        error: null,
+      },
+    };
+  } catch (e) {
+    console.error('Failed to create payment token:', e);
+
+    return {
+      props: {
+        paymentToken: null,
+        error: getErrorMessage(e),
+      },
+    };
+  }
 });
 
 export const PaymentIntentPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ paymentToken }) => {
+> = ({ paymentToken, error }) => {
   return (
     <Layout>
       <Container py={{ base: '16', md: '24' }}>
@@ -66,7 +86,14 @@ export const PaymentIntentPage: NextPage<
               </ListItem>
             </List>
           </Stack>
-          <PaymentForm paymentToken={paymentToken} />
+          {error ? (
+            <Alert status='error' borderRadius='xl' alignSelf='start'>
+              <AlertIcon />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          ) : (
+            <PaymentForm paymentToken={paymentToken!} />
+          )}
         </SimpleGrid>
       </Container>
     </Layout>

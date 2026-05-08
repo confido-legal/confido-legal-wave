@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start -p 7001",
     "lint": "next lint",
+    "test": "jest",
     "ngrok": "~/bin/ngrok http --region=us --domain=gravitylegal.ngrok.io 7001",
     "postinstall": "prisma db push",
     "reset-db": "rm -f prisma/legal-wave.sqlite && prisma db push && prisma generate"
@@ -49,9 +50,12 @@
   },
   "devDependencies": {
     "@svgr/webpack": "^8.0.1",
+    "@types/jest": "^30.0.0",
     "@types/react-text-mask": "^5.4.11",
+    "jest": "^30.4.1",
     "nodemon": "^3.1.3",
     "prisma": "^6.19.0",
+    "ts-jest": "^29.4.9",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0"
   }

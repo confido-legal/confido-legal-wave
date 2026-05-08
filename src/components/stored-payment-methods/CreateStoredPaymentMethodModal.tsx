@@ -2,6 +2,9 @@ import { useConfidoLegal } from '@/confido-legal-hook/useConfidoLegal';
 import { StoredPaymentMethod } from '@/confido-legal-requests';
 import { handleJsonResponse } from '@/lib/handleJsonResponse';
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
   Button,
   Code,
   Divider,
@@ -48,8 +51,19 @@ const CreateStoredPaymentMethodModal: FC<
       <ModalContent>
         <ModalHeader>Save a Payment Method</ModalHeader>
         <ModalCloseButton />
-        {loading && <div>Loading...</div>}
-        {error && <div>{error.message}</div>}
+        {loading && (
+          <ModalBody>
+            <Text>Loading...</Text>
+          </ModalBody>
+        )}
+        {error && (
+          <ModalBody>
+            <Alert status='error' borderRadius='md'>
+              <AlertIcon />
+              <AlertDescription>{error.message}</AlertDescription>
+            </Alert>
+          </ModalBody>
+        )}
         {token && (
           <StorePaymentMethodForm
             initialFocusRef={initialFocusRef}
@@ -156,7 +170,12 @@ const StorePaymentMethodForm: FC<StorePaymentMethodFormProps> = ({
     <form onSubmit={submitHandler}>
       <ModalBody pb={6}>
         <Stack spacing='6'>
-          {error && <div>{error.message}</div>}
+          {error && (
+            <Alert status='error' borderRadius='md'>
+              <AlertIcon />
+              <AlertDescription>{error.message}</AlertDescription>
+            </Alert>
+          )}
 
           <FormControl>
             <FormLabel>Client name</FormLabel>

@@ -64,9 +64,9 @@ export const Sidebar = () => {
           <Stack spacing={{ base: '5', sm: '6' }}>
             <Divider />
             <UserProfile
-              name={session.firm!.name}
+              name={session.firm?.name ?? ''}
               image='https://tinyurl.com/yhkm2ek8'
-              username={session.user!.username}
+              username={session.user?.username ?? ''}
             />
           </Stack>
         </Stack>

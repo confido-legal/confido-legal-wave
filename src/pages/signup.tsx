@@ -1,6 +1,8 @@
 import { PasswordField } from '@/components/auth/PasswordField';
 import { Logo } from '@/components/layout/Logo';
 import {
+  Alert,
+  AlertIcon,
   Box,
   Button,
   Container,
@@ -28,20 +30,28 @@ interface FormData {
 export const SignupPage: NextPage = () => {
   const { register, handleSubmit } = useForm<FormData>();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const submitHandler = handleSubmit(async (data) => {
+    setError(null);
     try {
       setLoading(true);
 
-      await fetch('/api/signup', {
+      const result = await fetch('/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
 
+      if (!result.ok) {
+        const body = await result.json().catch(() => null);
+        setError(body?.error || 'Signup failed. Please try again.');
+        return;
+      }
+
       window.location.href = '/';
     } catch (e) {
-      console.log(e);
+      setError('Unable to reach the server. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -81,6 +91,12 @@ export const SignupPage: NextPage = () => {
             borderRadius={{ base: 'none', sm: 'xl' }}
           >
             <Stack spacing='6'>
+              {error && (
+                <Alert status='error' borderRadius='md'>
+                  <AlertIcon />
+                  {error}
+                </Alert>
+              )}
               <Stack spacing='5'>
                 <FormControl>
                   <FormLabel htmlFor='firmName'>Firm name</FormLabel>

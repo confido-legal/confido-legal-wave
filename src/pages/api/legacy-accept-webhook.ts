@@ -16,11 +16,11 @@ export default async function handler(
 
   if (signature !== req.headers['x-prahari-signature']) {
     console.log('Incoming Legacy Webhook: Signature ❌');
-    res.send(400);
+    res.status(400).send('Invalid signature');
     return;
   }
 
   console.log('Incoming Legacy Webhook: Signature ✅');
   console.log(JSON.stringify(req.body, null, 2));
-  res.send(200);
+  res.status(200).send('OK');
 }

@@ -2,8 +2,9 @@ import AddClient from '@/components/clients/AddClient';
 import { Layout } from '@/components/layout/Layout';
 import { useSession } from '@/components/layout/SessionProvider';
 import { AddedClient } from '@/confido-legal-requests/addClient';
-import { Client, getClient } from '@/confido-legal-requests/getClient';
+import { Client } from '@/confido-legal-requests/getClient';
 import { graphDocsUrl, referenceGraphDocsObject } from '@/lib/graphDocs';
+import { requireAuth } from '@/lib/session';
 import {
   Button,
   Container,
@@ -19,13 +20,13 @@ import {
   AlertIcon,
 } from '@chakra-ui/react';
 import { NextPage } from 'next';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+
+export const getServerSideProps = requireAuth();
 
 const ClientsPage: NextPage = () => {
   const session = useSession();
-  const { firm, glFirm } = session;
-  const firmId = glFirm?.id || '';
-  const firmApiToken = firm?.glApiToken || '';
+  const { glFirm } = session;
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [addedClient, setAddedClient] = useState<AddedClient | null>(null);
   const [fetchedClient, setFetchedClient] = useState<Client | null>(null);
@@ -46,16 +47,24 @@ const ClientsPage: NextPage = () => {
     }
 
     try {
-      const client = await getClient(firmApiToken, addedClient.id);
+      const response = await fetch('/api/clients/get', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clientId: addedClient.id }),
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        setError(body?.error || `Failed to fetch client (${response.status})`);
+        return;
+      }
+
+      const client = await response.json();
       setFetchedClient(client);
       setError('');
     } catch (err) {
       console.error('Error fetching client:', err);
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'An unexpected error occurred while fetching the client.',
-      );
+      setError('An unexpected error occurred while fetching the client.');
     }
   };
 
@@ -72,6 +81,13 @@ const ClientsPage: NextPage = () => {
               {error}
             </Alert>
           )}
+          {!glFirm && (
+            <Alert status='warning'>
+              <AlertIcon />
+              Your firm is not connected to Confido Legal. Please complete the
+              connection setup on the home page first.
+            </Alert>
+          )}
           <Text textStyle={{ base: 'lg', md: 'xl' }} color='fg.muted'>
             Add and request clients using our{' '}
             <Link href={graphDocsUrl} isExternal color='blue.500'>
@@ -83,13 +99,16 @@ const ClientsPage: NextPage = () => {
             You can see clients you have created when emulating an admin for the
             firm in your sandbox account.
           </Text>
-          <Button colorScheme='blue' width='90px' onClick={openCreateModal}>
+          <Button
+            colorScheme='blue'
+            width='90px'
+            onClick={openCreateModal}
+            isDisabled={!glFirm}
+          >
             Add client
           </Button>
           <AddClient
             isOpen={createModalOpen}
-            firmId={firmId}
-            firmApiToken={firmApiToken}
             onClose={() => setCreateModalOpen(false)}
             onCreate={setAddedClient}
           />

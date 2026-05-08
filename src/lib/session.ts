@@ -91,6 +91,10 @@ export async function getFullSessionFromRequestOrThrow(
   };
 }
 
+function serializeForProps<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 export function withSession(
   getServerSideProps?: GetServerSidePropsWithSession
 ): GetServerSideProps {
@@ -109,7 +113,7 @@ export function withSession(
 
     return {
       props: {
-        session,
+        session: serializeForProps(session),
       },
     };
   };
@@ -140,7 +144,7 @@ export function requireAuth(
 
     return {
       props: {
-        session,
+        session: serializeForProps(session),
       },
     };
   });

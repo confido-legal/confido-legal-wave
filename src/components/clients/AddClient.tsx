@@ -16,21 +16,17 @@ import {
   Text,
   Link,
 } from '@chakra-ui/react';
-import { AddedClient, createClient } from '@/confido-legal-requests/addClient';
+import { AddedClient } from '@/confido-legal-requests/addClient';
 import { referenceGraphDocsInput } from '@/lib/graphDocs';
 
 export interface AddClientProps {
   isOpen: boolean;
-  firmId: string;
-  firmApiToken: string;
   onClose: () => void;
   onCreate: (client: AddedClient) => void;
 }
 
 const AddClient: FC<AddClientProps> = ({
   isOpen,
-  firmId,
-  firmApiToken,
   onClose,
   onCreate,
 }) => {
@@ -39,13 +35,6 @@ const AddClient: FC<AddClientProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddClient = async () => {
-    if (!firmId) {
-      setError(
-        'Firm ID is missing. Please ensure you are logged in with a valid firm.',
-      );
-      return;
-    }
-
     if (!clientName.trim()) {
       setError('Client name cannot be empty.');
       return;
@@ -55,17 +44,26 @@ const AddClient: FC<AddClientProps> = ({
     setIsSubmitting(true);
 
     try {
-      const client = await createClient(firmApiToken, clientName, firmId);
+      const response = await fetch('/api/clients/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clientName }),
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        setError(body?.error || `Failed to add client (${response.status})`);
+        return;
+      }
+
+      const client = await response.json();
       onCreate(client);
       setClientName('');
       setError('');
       onClose();
-    } catch (err: any) {
-      console.error(err);
-      const errorMessage =
-        err?.response?.data?.message ||
-        'An error occurred while creating the client.';
-      setError(errorMessage);
+    } catch (err) {
+      console.error('Error adding client:', err);
+      setError('An unexpected error occurred while creating the client.');
     } finally {
       setIsSubmitting(false);
     }

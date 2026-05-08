@@ -25,16 +25,16 @@ export default function Home(
   console.log('props: ', props);
 
   const session = useSession();
-  const { firm } = session;
+  const { glFirm } = session;
 
   return (
     <Layout>
       <Container py='8' height='full'>
-        {!firm?.glApiToken && (
+        {!glFirm && (
           <ConnectionOptionsSplash connectUrl={props.connectUrl} />
         )}
-        {firm?.glApiToken && <GravityLegalConnectionStatus />}
-        {session.glFirm?.isAcceptingPayments && <PaymentVehicleSplash />}
+        {glFirm && <GravityLegalConnectionStatus />}
+        {glFirm?.isAcceptingPayments && <PaymentVehicleSplash />}
       </Container>
     </Layout>
   );
